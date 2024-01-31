@@ -105,7 +105,16 @@ and store the result in the variables provided below (keep the brackets so that 
 **Solution:**
 
 ```{r}
-# YOUR CODE HERE
+
+data_MC_excerpt %>% filter(block == "goNoGo")
+
+meannogo <- data_MC_excerpt %>% filter(block == "goNoGo") %>% mean(RT, na.rm = T)
+meanreaction <- data_MC_excerpt %>% filter(block == "reaction") %>% mean(RT, na.rm = T)
+meandiscrimination <- data_MC_excerpt %>% filter(block == "discrimination") %>% mean(RT, na.rm = T)
+
+(`goNoGo-reaction`       <-  meannogo - meanreaction )
+(`discrimination-goNoGo` <-  meandiscrimination - meannogo )
+
 ```
 
 ## Ex 1.c Build predictor matrix [5 points]
