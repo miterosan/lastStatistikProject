@@ -75,15 +75,11 @@ In particular we are interested in the hypotheses spelled out in Appendix D.1.1.
 Create a variable `data_MC_excerpt` that contains all and only the relevant columns from the MC data set.
 The dependent variable should be the first column.
 
-```{r, eval = F}
-data_MC_excerpt <- aida::data_MC_cleaned %>% 
-  ... 
-```
-
 **Solution**
 
 ```{r}
 data_MC_excerpt <- aida::data_MC_cleaned %>% select(RT, submission_id, shape, block)
+data_MC_excerpt
 ```
 
 ## Ex 1.b Get the empirical differences between means [2 points]
@@ -95,25 +91,18 @@ Compute the following differences:
 
 and store the result in the variables provided below (keep the brackets so that the values assigned show in the Rmarkdown output):
 
-```{r, eval = F}
-
-(`goNoGo-reaction`       <-  ... )
-(`discrimination-goNoGo` <-  ... )
-
-```
-
 **Solution:**
 
 ```{r}
 
-data_MC_excerpt %>% filter(block == "goNoGo")
+reactionBlock <- data_MC_excerpt %>% filter(block == "reaction")
+discriminationBlock <- data_MC_excerpt %>% filter(block == "discrimination")
+nogoBlock <- data_MC_excerpt %>% filter(block == "goNoGo")
 
-meannogo <- data_MC_excerpt %>% filter(block == "goNoGo") %>% mean(RT, na.rm = T)
-meanreaction <- data_MC_excerpt %>% filter(block == "reaction") %>% mean(RT, na.rm = T)
-meandiscrimination <- data_MC_excerpt %>% filter(block == "discrimination") %>% mean(RT, na.rm = T)
+(`goNoGo-reaction`       <-  mean(nogoBlock$RT) - mean(reactionBlock$RT) )
+(`discrimination-goNoGo` <-  mean(discriminationBlock$RT) - mean(nogoBlock$RT) )
 
-(`goNoGo-reaction`       <-  meannogo - meanreaction )
-(`discrimination-goNoGo` <-  meandiscrimination - meannogo )
+
 
 ```
 
