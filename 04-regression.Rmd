@@ -1,7 +1,7 @@
 ---
 title: "Homework Sheet 4 -- Regression modeling"
 date: 'Due: Monday, February 5 by 23:59 CET'
-author: ""
+author: "Group 1"
 output: 
   html_document:
     toc: true
