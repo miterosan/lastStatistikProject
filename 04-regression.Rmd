@@ -83,7 +83,7 @@ data_MC_excerpt <- aida::data_MC_cleaned %>%
 **Solution**
 
 ```{r}
-# YOUR CODE HERE
+data_MC_excerpt <- aida::data_MC_cleaned %>% select(RT, submission_id, shape, block)
 ```
 
 ## Ex 1.b Get the empirical differences between means [2 points]
