@@ -214,17 +214,20 @@ Use R code to report how many participants (in Step 1) and trials (in step 2) ar
 # look at error rates for filler sentences by subject
 # mark every subject with < 0.5 proportion correct
 
+# create a new table containing the values whether the proportion of correctness in filer trials is over 50%
 subject_error_rate <- IDA_data_KoF %>% 
-    filter(condition == "filler") %>% 
-    group_by(submission_id) %>% 
+    filter(condition == "filler") %>%  # only consider filler trails
+    group_by(submission_id) %>%        # check per person
     summarise(
-        proportion_correct = mean(correct_answer == response),
-        outlier_subject = proportion_correct < 0.5
+        proportion_correct = mean(correct_answer == response),   # what is the mean in the group (participants responses) that they got correct in filler trails
+        outlier_subject = proportion_correct < 0.5  # if propotion is over 50%, then it is a outlier
     ) %>% 
-    arrange(proportion_correct) %>%
-    filter(outlier_subject == F)
+    arrange(proportion_correct) %>%  
+    filter(outlier_subject == F)  # we only care about the ones that are outliers
 
+# filter all suspect participants
 filtered <- IDA_data_KoF %>% filter(submission_id %in% subject_error_rate$submission_id)
+# write into console how many got removed by comparing against the original dataset
 sprintf("Removed %d subjects", nrow(IDA_data_KoF) - nrow(filtered))
 ```
 # exclude every critical trial whose 'background' test question was answered wrongly
