@@ -215,13 +215,17 @@ Use R code to report how many participants (in Step 1) and trials (in step 2) ar
 # mark every subject with < 0.5 proportion correct
 
 subject_error_rate <- IDA_data_KoF %>% 
-  filter(condition == "filler") %>% 
-  group_by(submission_id) %>% 
-  summarise(
-    proportion_correct = mean(correct_answer == response),
-    outlier_subject = proportion_correct < 0.5
-  ) %>% 
-  arrange(proportion_correct)
+    filter(condition == "filler") %>% 
+    group_by(submission_id) %>% 
+    summarise(
+        proportion_correct = mean(correct_answer == response),
+        outlier_subject = proportion_correct < 0.5
+    ) %>% 
+    arrange(proportion_correct) %>%
+    filter(outlier_subject == F)
+
+filtered <- IDA_data_KoF %>% filter(submission_id %in% subject_error_rate$submission_id)
+sprintf("Removed %d subjects", nrow(IDA_data_KoF) - nrow(filtered))
 
 ```
 
