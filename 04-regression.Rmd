@@ -125,6 +125,12 @@ data_MC_excerpt <- data_MC_excerpt %>%
 
 ```{r}
 # YOUR CODE HERE
+data_MC_excerpt <- data_MC_excerpt %>% 
+  mutate(
+    grand_mean  = mean(data_MC_excerpt$RT), 
+    `goNoGo-reaction` = `goNoGo-reaction`,
+    `discrimination-goNoGo` = `discrimination-goNoGo`
+  )
 ```
 
 ## Ex 1.d Run a Bayesian regression model [3 points]
@@ -205,6 +211,18 @@ Use R code to report how many participants (in Step 1) and trials (in step 2) ar
 
 ```{r}
 # YOUR CODE HERE
+# look at error rates for filler sentences by subject
+# mark every subject with < 0.5 proportion correct
+
+subject_error_rate <- IDA_data_KoF %>% 
+  filter(condition == "filler") %>% 
+  group_by(submission_id) %>% 
+  summarise(
+    proportion_correct = mean(correct_answer == response),
+    outlier_subject = proportion_correct < 0.5
+  ) %>% 
+  arrange(proportion_correct)
+
 ```
 
 ## Ex 2.b Plot the data [2 points]
@@ -216,6 +234,15 @@ Use the web-book code as much as you like while making any necessary amendments.
 
 ```{r}
 # YOUR CODE HERE
+# plot by-subject error rates
+subject_error_rate %>% 
+  ggplot(aes(x = proportion_correct, color = outlier_subject, shape = outlier_subject)) + 
+  geom_jitter(aes(y = ""), width = 0.001) +
+  xlab("Poportion of correct answers") + ylab("") + 
+  ggtitle("Distribution of proportion of correct answers on filler trials") +
+  xlim(0, 1) +
+  scale_color_discrete(name = "Outlier") +
+  scale_shape_discrete(name = "Outlier")
 ```
 
 ## Ex 2.c Run logistic regression model [5 points]
