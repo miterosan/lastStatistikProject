@@ -234,6 +234,7 @@ sprintf("Removed %d subjects", nrow(IDA_data_KoF) - nrow(filtered))
 ```{r}
 d_cleaned <- 
   filtered %>% 
+  filtered %>% 
   # select only the 'background question' trials
   filter(condition == "background check") %>% 
   # is the background question answered correctly?
@@ -261,6 +262,7 @@ Use the web-book code as much as you like while making any necessary amendments.
 # YOUR CODE HERE
 # plot by-subject error rates
 subject_error_rate %>% 
+  #specify the color and shape of the elements on the plot according to whether or not the subject was an outlier (i.e. scored <50% on the filler condition)
   ggplot(aes(x = proportion_correct, color = outlier_subject, shape = outlier_subject)) + 
   geom_jitter(aes(y = ""), width = 0.001) +
   xlab("Poportion of correct answers") + ylab("") + 
