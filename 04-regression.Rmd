@@ -323,6 +323,9 @@ brms::hypothesis(testResult, "conditionCondition0 > conditionCondition1")
 ```
 
 > YOUR INTERPRETATION HERE
+The estimate for the difference between Condition 0 and Condition 1 is positive, as the hypothesis would imply. However, the credible interval also contains negative values, so we cannot be sure that the hypothesis really is true (as there still exists a significant probability that the complement of the hypothesis, i.e. that the participants tended to respond "TRUE" less for Condition 0 than for Condition 1 coud be true). This is also expressed through the value for the evidence ratio. It's above 1 which we can interpret as the probability of our hypothesis being higher than for the complement of the hypothesis. However, it is still pretty close to 1 (which would mean both the hypothesis and it's complement have the same probability), so there is only really weak evidence in favor of the hypothesis. The probability that it's true (the posterior probability) is only 61% which is definitely not statistically significant.
+The data does not provide enough evidence to accept or reject the hypothesis, so we withhold judgement.
+
 
 ### Hypothesis 2: C0 = C6
 
@@ -333,6 +336,9 @@ brms::hypothesis(testResult, "conditionCondition0 = conditionCondition6")
 ```
 
 > YOUR INTERPRETATION HERE
+The hypothesis is to be rejected, as all values in the CI intervall for the estimated slope of the differene of Condition 0 and Condition 6 fall far below 0, so our hypothesis is not included in the CI. That's also what the star in the last column indicates. 
+The clear evidence against the hypothesis is also expressed in the fact that the evidence ratio (the probability that our hypothesis is true given the data divided by the probability that the complement of our probability is true given the data) equals 0 and the posterior probability equals 0 as well.
+The data provides evidence to reject the hypothesis.
 
 ### Hypothesis 3: C9 < C10
 
@@ -343,6 +349,9 @@ brms::hypothesis(testResult, "conditionCondition9 = conditionCondition10")
 ```
 
 > YOUR INTERPRETATION HERE
+Our hypothesis implies that the slope for the difference between Condition 9 and Condition 10 should be 0. However, that value is not included in the credible intervall (as can be easily read out of the lower and upper borders as well as of the star). The evidence ratio (Bayes factor) is also quite low, implying that the hypothesis is around 10 times as unlikely as its complement.
+Using the simple binary decision rule, the data provides evidence to reject the hypothesis as it does not fall into the credible interval. The Bayes factor also provides evidence for rejecting it (between "substantial" and strong in the table on its interpretation discussed in the lecture).
+
 
 ## Ex 2.e Interaction with `gender` [6 points]
 
@@ -400,3 +409,9 @@ summary(fit_brms_KoF_interaction)
 **Solution:**
 
 > YOUR INTERPRETATION HERE
+As Rhat is 1.00 for all calculated parameters, the chains do converge in all cases, meaning that we can use the results to draw conclusions about whether or not gender has an influence on the given responses.
+The baseline level is (female, Cond0) in this case. The respective value for the responses of female participants for sentences belonging to Condition 0 is the intercept. The calculated slopes for "Cond1" and "male" can be interpreted as the assumed difference between the respective category and the baseline. 
+The respective hypotheses are: (i) main effect: gender:male != 0, (ii) interaction: condition:Cond1:gender:male != 0
+However, the calculated values for the slopes (as for the intercept but that's not important for the comparasion) are only the ones which lead to a linear model that best fits the data, but other parameters might be possible (the most likely parameters are contained in the respective credible interval). That being said, we cannot be certain that f.ex. the result for gender "male" is lower than for "female" (the baseline), even though the estimated slope is negative, as the credible interval also contains 0 (which would mean gender has no influx hat all) as well as positive values (which would mean gender has the opposite influx than stated in the point-value estimate). The same applies for the effect of the condition and for the interaction (which is described in the last row).
+Long story short: All the credible intervals for the respective slopes contain a range from negative to positive values, so also include 0. Thus we can reject both hypotheses. There is significant evidence that gender is not a main effect and that no interaction between gender and condition exists.
+
