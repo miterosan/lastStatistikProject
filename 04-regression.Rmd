@@ -156,7 +156,7 @@ Use the function `aida::summarize_sample_vector` to show Bayesian summary statis
 **Solution:**
 
 ```{r}
-# YOUR CODE HERE
+aida::summarize_sample_vector(data_MC_excerpt, c("shape", "block"))
 ```
 
 ## Ex 1.f Interpret your results [7 points]
