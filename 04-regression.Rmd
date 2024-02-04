@@ -234,7 +234,6 @@ sprintf("Removed %d subjects", nrow(IDA_data_KoF) - nrow(filtered))
 ```{r}
 d_cleaned <- 
   filtered %>% 
-  filtered %>% 
   # select only the 'background question' trials
   filter(condition == "background check") %>% 
   # is the background question answered correctly?
@@ -285,7 +284,7 @@ Finally, also add a call of `summary(...)` to show the summary of the fitted mod
 
 **Solution:**
 
-```{r results='hide'}
+```{r results = 'hide'}
 testResult <- 
     d_cleaned %>% 
     mutate(condition = as.character(condition)) %>%
