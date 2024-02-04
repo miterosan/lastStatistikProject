@@ -233,7 +233,7 @@ sprintf("Removed %d subjects", nrow(IDA_data_KoF) - nrow(filtered))
 # exclude every critical trial whose 'background' test question was answered wrongly
 ```{r}
 d_cleaned <- 
-  d_cleaned %>% 
+  filtered %>% 
   # select only the 'background question' trials
   filter(condition == "background check") %>% 
   # is the background question answered correctly?
@@ -243,9 +243,11 @@ d_cleaned <-
   # select only the relevant columns
   select(submission_id, vignette, background_correct) %>%
   # right join lines to original data set 
-  right_join(d_cleaned, by = c("submission_id", "vignette")) %>% 
+  right_join(filtered, by = c("submission_id", "vignette")) %>% 
   # remove all special trials, as well as main trials with incorrect background check
-  filter(startsWith(condition, "Condition") & background_correct == TRUE)
+  filter(!(str_detect(condition, "^Condition") & background_correct == FALSE))
+
+
 ```
 
 ## Ex 2.b Plot the data [2 points]
@@ -283,7 +285,23 @@ Finally, also add a call of `summary(...)` to show the summary of the fitted mod
 **Solution:**
 
 ```{r results='hide'}
-# YOUR CODE HERE
+testResult <- 
+    d_cleaned %>% 
+    mutate(condition = as.character(condition)) %>%
+    brm(
+    
+      formula = response ~ condition, 
+    
+      family = bernoulli(link = "logit"),
+      
+      prior = prior(student_t(1, 0, 2),  class = 'b'),
+      
+      sample_prior = 'yes',
+      
+      iter = 20000
+    )
+
+testResult %>% summary()
 ```
 
 ## Ex 2.d Test hypotheses [12 points]
@@ -296,7 +314,7 @@ For each case interpret the results and formulate a conclusion such as "does/doe
 **Solution:**
 
 ```{r}
-# YOUR CODE HERE
+brms::hypothesis(testResult, "conditionCondition0 > conditionCondition1")
 ```
 
 > YOUR INTERPRETATION HERE
@@ -306,7 +324,7 @@ For each case interpret the results and formulate a conclusion such as "does/doe
 **Solution:**
 
 ```{r}
-# YOUR CODE HERE
+brms::hypothesis(testResult, "conditionCondition0 = conditionCondition6")
 ```
 
 > YOUR INTERPRETATION HERE
@@ -316,7 +334,7 @@ For each case interpret the results and formulate a conclusion such as "does/doe
 **Solution:**
 
 ```{r}
-# YOUR CODE HERE
+brms::hypothesis(testResult, "conditionCondition9 = conditionCondition10")
 ```
 
 > YOUR INTERPRETATION HERE
