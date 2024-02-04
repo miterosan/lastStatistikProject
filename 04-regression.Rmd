@@ -141,7 +141,12 @@ Use the function `aida::get_samples_regression_noninformative` to obtain 10,000 
 **Solution:**
 
 ```{r}
-# YOUR CODE HERE
+
+X <- data_MC_excerpt %>% select(grand_mean, `goNoGo-reaction`,`discrimination-goNoGo` ) %>% as.matrix()
+y <- data_MC_excerpt$RT
+
+
+aida::get_samples_regression_noninformative(X,y , 10000)
 ```
 
 ## Ex 1.e Summary statistics [2 point]
