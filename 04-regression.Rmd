@@ -259,7 +259,6 @@ Use the web-book code as much as you like while making any necessary amendments.
 **Solution:**
 
 ```{r}
-# YOUR CODE HERE
 # plot by-subject error rates
 subject_error_rate %>% 
   #specify the color and shape of the elements on the plot according to whether or not the subject was an outlier (i.e. scored <50% on the filler condition)
