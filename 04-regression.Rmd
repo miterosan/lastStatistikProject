@@ -294,7 +294,7 @@ testResult <-
     
       family = bernoulli(link = "logit"),
       
-      prior = prior(student_t(1, 0, 2),  class = 'b'),
+      prior = prior(student_t(1, 0, 2)),
       
       sample_prior = 'yes',
       
