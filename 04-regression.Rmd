@@ -78,6 +78,7 @@ The dependent variable should be the first column.
 **Solution**
 
 ```{r}
+#RT is the dependent variable, submission_id, shape and block are relevant independent variables for the research questions
 data_MC_excerpt <- aida::data_MC_cleaned %>% select(RT, submission_id, shape, block)
 data_MC_excerpt
 ```
@@ -94,11 +95,12 @@ and store the result in the variables provided below (keep the brackets so that 
 **Solution:**
 
 ```{r}
-
+#create subsets of the data containing only the observations for the respective conditions
 reactionBlock <- data_MC_excerpt %>% filter(block == "reaction")
 discriminationBlock <- data_MC_excerpt %>% filter(block == "discrimination")
 nogoBlock <- data_MC_excerpt %>% filter(block == "goNoGo")
 
+#calculate the difference in means of the observed reaction times for the different conditions
 (`goNoGo-reaction`       <-  mean(nogoBlock$RT) - mean(reactionBlock$RT) )
 (`discrimination-goNoGo` <-  mean(discriminationBlock$RT) - mean(nogoBlock$RT) )
 
@@ -111,27 +113,19 @@ nogoBlock <- data_MC_excerpt %>% filter(block == "goNoGo")
 Add three columns to the data tibble `data_MC_excerpt`, like shown below.
 These columns should contain the numerical values to obtain so-called **simple difference coding** (as discussed in the initial video of Chapter 14, after ca. 10 minutes).
 
-```{r, eval = F}
-data_MC_excerpt <- data_MC_excerpt %>% 
-  mutate(
-    grand_mean  = ..., 
-    `goNoGo-reaction` = ...,
-    `discrimination-goNoGo` = ...
-  )
-```
-
-
 **Solution:**
 
 ```{r}
-# YOUR CODE HERE
 data_MC_excerpt <- data_MC_excerpt %>% 
   mutate(
-    grand_mean  = mean(data_MC_excerpt$RT), 
-    `goNoGo-reaction` = `goNoGo-reaction`,
-    `discrimination-goNoGo` = `discrimination-goNoGo`
+    #assign numerical values to the categorical predictor condition through simple difference coding, as described in the video
+    grand_mean  = 1, 
+    `goNoGo-reaction` = ifelse(block=="reaction", -2/3, 1/3),
+    `discrimination-goNoGo` = ifelse(block == "discrimination", 2/3, -1/3)
   )
 ```
+
+
 
 ## Ex 1.d Run a Bayesian regression model [3 points]
 
@@ -145,8 +139,7 @@ Use the function `aida::get_samples_regression_noninformative` to obtain 10,000 
 X <- data_MC_excerpt %>% select(grand_mean, `goNoGo-reaction`,`discrimination-goNoGo` ) %>% as.matrix()
 y <- data_MC_excerpt$RT
 
-
-aida::get_samples_regression_noninformative(X,y , 10000)
+sampled_values <- aida::get_samples_regression_noninformative(X, y, 10000)
 ```
 
 ## Ex 1.e Summary statistics [2 point]
@@ -156,7 +149,8 @@ Use the function `aida::summarize_sample_vector` to show Bayesian summary statis
 **Solution:**
 
 ```{r}
-aida::summarize_sample_vector(data_MC_excerpt, c("shape", "block"))
+aida::summarize_sample_vector(samples = sampled_values$`goNoGo-reaction`, "goNoGo-reaction")
+aida::summarize_sample_vector(samples = sampled_values$`discrimination-goNoGo`, "discrimination-goNoGo")
 ```
 
 ## Ex 1.f Interpret your results [7 points]
@@ -167,6 +161,10 @@ In doing so, state clearly what the coefficients encode, what the numerical resu
 **Solution:**
 
 > YOUR INTERPRETATION HERE
+Both hypotheses are interval-based as they claim that reaction times are higher for certain conditions than for others, so that the differences between the reaction times of the said conditions are positive. We can restate the hypotheses like this, using the names as in the code above (always refering to the reaction times observed in the stated condition: 
+H1: goNoGo-reaction>0
+H2: discrimination-reaction>0
+The calculated estimates for theses differents are both far above 0, and so are all values in the 95% credible interval. Thus, according to Kruschke-style logic, we can accept both hypothesis as they overlap to 100% with the respective credible interval
 
 # <span style = "color:firebrick">Exercise 2:</span> Analyzing the King of France [28 points]
 
@@ -413,5 +411,4 @@ As Rhat is 1.00 for all calculated parameters, the chains do converge in all cas
 The baseline level is (female, Cond0) in this case. The respective value for the responses of female participants for sentences belonging to Condition 0 is the intercept. The calculated slopes for "Cond1" and "male" can be interpreted as the assumed difference between the respective category and the baseline. 
 The respective hypotheses are: (i) main effect: gender:male != 0, (ii) interaction: condition:Cond1:gender:male != 0
 However, the calculated values for the slopes (as for the intercept but that's not important for the comparasion) are only the ones which lead to a linear model that best fits the data, but other parameters might be possible (the most likely parameters are contained in the respective credible interval). That being said, we cannot be certain that f.ex. the result for gender "male" is lower than for "female" (the baseline), even though the estimated slope is negative, as the credible interval also contains 0 (which would mean gender has no influx hat all) as well as positive values (which would mean gender has the opposite influx than stated in the point-value estimate). The same applies for the effect of the condition and for the interaction (which is described in the last row).
-Long story short: All the credible intervals for the respective slopes contain a range from negative to positive values, so also include 0. Thus we can reject both hypotheses. There is significant evidence that gender is not a main effect and that no interaction between gender and condition exists.
-
+Long story short: All the credible intervals for the respective slopes contain a wide range from negative to positive values, so also include 0. Thus we cannot accept neither of the hypotheses. However, as the results are so far spreaded around 0, we cannot reject it neither (that would mean accepting the complement hypothesis that gender is not a main effect/there is no interaction at all between gender and condition and we don't have significant evidence to accept this complement hypothesis neither), so we withhold judgement on this question.
